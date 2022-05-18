@@ -1,9 +1,27 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2155
 
 set -Eeuo pipefail
 
 binary_name="swagger"
-# swagger_darwin_arm64
+darwin_arm64_first_version="0.29.0"
+
+function semver_min_version_check() {
+  local actual=$1
+  local required=$2
+  local lowest
+
+  if [[ $actual == "$required" ]]; then
+    return 0
+  fi
+
+  lowest=$(printf '%s\n' "$required" "$actual" | sort -V | head -n1 )
+  if [[ $lowest == "$required" ]]; then
+    return 0
+  fi
+
+  return 1
+}
 
 install() {
   local version=$2
@@ -13,6 +31,12 @@ install() {
   arch="$(uname -m)"
   if [ "$arch" == "x86_64" ]; then
     arch="amd64"
+  fi
+  if [[ $arch == "darwin" ]]; then
+    local semver=$(echo "$version" | tr -d 'v')
+    if semver_min_version_check "$semver" "$darwin_arm64_first_version"; then
+      arch="amd64"
+    fi
   fi
   readonly arch
   local filename="${binary_name}_${platform}_${arch}"
