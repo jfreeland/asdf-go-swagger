@@ -8,9 +8,12 @@ binary_name="swagger"
 install() {
   local version=$2
   local install_path=$3
-  platform="$(uname -s)"
+  platform="$(uname -s | tr '[:upper:]' '[:lower:]')"
   readonly platform
   arch="$(uname -m)"
+  if [ "$arch" == "x86_64" ]; then
+    arch="amd64"
+  fi
   readonly arch
   local filename="${binary_name}_${platform}_${arch}"
 
