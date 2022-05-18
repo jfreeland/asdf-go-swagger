@@ -7,7 +7,7 @@
 ## Install
 
 ```
-asdf plugin-add mark https://github.com/jfreeland/asdf-go-swagger.git
+asdf plugin-add go-swagger https://github.com/jfreeland/asdf-go-swagger.git
 ```
 
 ## Use
