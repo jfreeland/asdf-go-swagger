@@ -6,23 +6,6 @@ set -Eeuo pipefail
 binary_name="swagger"
 darwin_arm64_first_version="0.29.0"
 
-function semver_min_version_check() {
-  local actual=$1
-  local required=$2
-  local lowest
-
-  if [[ $actual == "$required" ]]; then
-    return 0
-  fi
-
-  lowest=$(printf '%s\n' "$required" "$actual" | sort -V | head -n1 )
-  if [[ $lowest == "$required" ]]; then
-    return 0
-  fi
-
-  return 1
-}
-
 install() {
   local version=$2
   local install_path=$3
@@ -32,9 +15,10 @@ install() {
   if [ "$arch" == "x86_64" ]; then
     arch="amd64"
   fi
-  if [[ $arch == "darwin" ]]; then
+  if [[ $platform == "darwin" ]]; then
     local semver=$(echo "$version" | tr -d 'v')
-    if semver_min_version_check "$semver" "$darwin_arm64_first_version"; then
+    lowest=$(printf '%s\n' "$darwin_arm64_first_version" "$semver")
+    if [[ "$lowest" != "$darwin_arm64_first_version" ]]; then
       arch="amd64"
     fi
   fi
