@@ -17,7 +17,7 @@ install() {
   fi
   if [[ $platform == "darwin" ]]; then
     local semver=$(echo "$version" | tr -d 'v')
-    lowest=$(printf '%s\n' "$darwin_arm64_first_version" "$semver")
+    lowest=$(printf '%s\n' "$darwin_arm64_first_version" "$semver" | sort -V | head -n 1)
     if [[ "$lowest" != "$darwin_arm64_first_version" ]]; then
       arch="amd64"
     fi
