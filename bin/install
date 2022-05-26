@@ -4,10 +4,16 @@
 set -Eeuo pipefail
 
 binary_name="swagger"
-darwin_arm64_first_version="0.29.0"
+first_version_darwin_arm64="0.29.0"
+first_version_v="0.17.0"
 
 install() {
   local version=$2
+  local version_download=$version
+  lowest=$(printf '%s\n' "$first_version_v" "$version" | sort -V | head -n 1)
+  if [[ "$lowest" == "$first_version_v" ]]; then
+    version_download="v${version}"
+  fi
   local install_path=$3
   platform="$(uname -s | tr '[:upper:]' '[:lower:]')"
   readonly platform
@@ -16,9 +22,9 @@ install() {
     arch="amd64"
   fi
   if [[ $platform == "darwin" ]]; then
-    local semver=$(echo "$version" | tr -d 'v')
-    lowest=$(printf '%s\n' "$darwin_arm64_first_version" "$semver" | sort -V | head -n 1)
-    if [[ "$lowest" != "$darwin_arm64_first_version" ]]; then
+    echo "${first_version_darwin_arm64} and ${version}"
+    lowest=$(printf '%s\n' "$first_version_darwin_arm64" "$version" | sort -V | head -n 1)
+    if [[ "$lowest" != "$first_version_darwin_arm64" ]]; then
       arch="amd64"
     fi
   fi
@@ -27,7 +33,7 @@ install() {
 
   local bin_install_path="$install_path/bin"
   local binary_path="$bin_install_path/swagger"
-  local download_url="https://github.com/go-swagger/go-swagger/releases/download/${version}/${filename}"
+  local download_url="https://github.com/go-swagger/go-swagger/releases/download/${version_download}/${filename}"
 
   echo "Creating bin directory"
   mkdir -p "${bin_install_path}"

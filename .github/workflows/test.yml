@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest]
-        ver: [0.15.0, v0.25.0, v0.29.0]
+        ver: [0.15.0, 0.25.0, 0.29.0]
     steps:
       - name: asdf_plugin_test
         uses: asdf-vm/actions/plugin-test@v1
